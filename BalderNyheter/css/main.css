@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
+header
+{
+	margin: 1em auto;
+	padding: 1em 3em;
+}
+
+article
+{
+	margin: 3em auto;
+	padding: 3em;
+}
+
+article, header, nav
+{
+	width: 60em;
+}
+
+nav a
+{
+	height: 2em;
+	width: 25em;
+}
+
+nav
+{
+	display: flex;
+	justify-content: space-around;
+}
+
+textarea
+{
+	height: 20em;
+	font-size: 2em;
+	width: 100%;
+	border-radius: .5em;
+}
+
+form input
+{
+	height: 1.6em;
+	width: 17em;
+
+}
+
+article img
+{
+	width: 60em;
+	max-height: 35em;
+}
+
+article a h2:hover, article a:hover
+{
+	color: black;
+	text-decoration: underline;
+}
+
+article a h2, article a
+{
+	text-decoration: none;
+}
+
+article, header
+{
+	background-color: #f4f4f4;
+}
+
+nav
+{
+	display: flex;
+	text-underline-position: none;
+	justify-content: space-around;
+}
+nav a, nav a:visited
+{
+	text-decoration: none;
+	text-align: center;
+	font-size: 1.6em;
+	color: black;
+}
+
+nav a:hover
+{
+	text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	color: black;
+	font-family: 'Roboto Mono', monospace;
+}
+
+h1
+{
+	font-size: 4em;
+}
+h4
+{
+	font-size: 1.4em;
+}
+
+header h1, header h4
+{
+	text-align: center;
+}
+
+article h2
+{
+	font-size: 2.5em;
+}
+article b, article p, nav
+{
+	font-family: 'arial';
+	font-size: 1em;
+}
+span
+{
+	font-size: 1em;
+}
+
+.combox
+{
+	width: 60em;
+}
+
+.combox textarea
+{
+	width: 94%;
+	height: 87%;
+	padding: 1%;
+	margin: 1.5%;
+}
+
+.comment
+{
+	width: 90%;
+	min-height: 40%;
+	margin: 2%;
+	padding: 3%;
+	height: auto;
+	background-color: white;
+	font-size: 1.3em;
+}
+
+.comment b
+{
+	color: red;
+}
+
+.comment span
+{
+	color: green;
+}
+
+.comment img
+{
+	width: 90%;
+	height: auto;
+}
+
+.mod
+{
+	color: white;
+    background: red; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, orange , yellow, green, cyan, blue, violet); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(right, orange, yellow, green, cyan, blue, violet); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(right, orange, yellow, green, cyan, blue, violet); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to right, orange , yellow, green, cyan, blue, violet); /* Standard syntax (must be last) */
+    border-radius: 20%;
+    padding: 1% 3%;
+}

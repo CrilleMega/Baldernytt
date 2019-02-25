@@ -7,6 +7,7 @@ if($_SESSION["user_logged"] != "admin")
 }
 ?>
 <body>
+		<main>
 	<article>
 		<form method="POST" enctype='multipart/form-data'>
 			<p>Bild: <input type="file" name="bild"></p>
@@ -77,4 +78,5 @@ if($_SESSION["user_logged"] != "admin")
 			?>
 		
 	</article>
+</main>
 </body>

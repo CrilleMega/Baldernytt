@@ -55,16 +55,18 @@
 			        $Com->comtext = $row->comtext;
 			        $Com->comOn = $row->comon;
 			        $Com->sender = $row->sender;
+			        $Com->dateS = $row->date;
 			        array_push($comList, $Com);
 			    }
 				
 			}
-		//echo Count($comList);
+			//Skriv ut endast en artikel om query ej tom.
 			if(strlen($_SERVER["QUERY_STRING"]) > 0)
 			{
 				$querID = $_SERVER["QUERY_STRING"];
 				$sql = "SELECT * FROM `inlagg` WHERE id = $querID;";
 			}
+			//Skriv ut alla inlägg om query är tom.
 			else
 			{
 				$sql = "SELECT * FROM `inlagg` WHERE 1=1 ORDER BY id DESC";
@@ -84,33 +86,53 @@
 			    }
 			    for ($i=0; $i < Count($content); $i++) 
 			    { 
-		    	if(strlen($_SERVER["QUERY_STRING"]) > 0)
-				{
-			    	if(strlen($bild[$i]) > 6)
-			    	{
-			    		echo"<article><img src=\"$bild[$i]\" alt=\"bild\"></img>", $content[$i], "<span>", $date[$i], "</span>";
-			    	}
-			    	else
-			    	{
-			    		echo"<article>", $content[$i], "<span>", $date[$i], "</span>";
-			    	}
+				    //Om det finsn en query.
+			    	if(strlen($_SERVER["QUERY_STRING"]) > 0)
+					{
+				    	if(strlen($bild[$i]) > 6)
+				    	{
+				    		echo"<article><img src=\"$bild[$i]\" alt=\"bild\"></img>", $content[$i], "<span>", $date[$i], "</span>";
+				    	}
+				    	else
+				    	{
+				    		echo"<article>", $content[$i], "<span>", $date[$i], "</span>";
+				    	}
+
 						$combox = "combox" . $i;
 						$submit = "submit" . $i;
 						$comid =  $ID[$i];
 						//SKRIV UT KOMMENTARER UNDER DIV
-						//$sql = "SELECT * FROM `comment` WHERE `comon` = \"$comid\";";
-						//$sql = "SELECT * FROM `comment` WHERE 1=1 ORDER BY ID DESC;";
-						echo "<br><br><h3>Kommentarer</h3><div>";
+						echo "<br><br><h3>Kommentarer</h3><div class=\"comholder\">";
+						
 						foreach ($comList as $comment)
 						{
-							/*var_dump($comment->comOn);
-							echo "<br>";
-							var_dump($comment->comtext);
-							echo "<br>";
-							echo "<br>";*/
+							$sql = "SELECT * FROM `users` WHERE `username` = \"$comment->sender\"";
+							if($result = mysqli_query($conn, $sql))
+							{
+								$com = new Comment();
+								while($row = mysqli_fetch_row($result))
+								{
+									$com->img = $row[2];
+								}
+								if(strlen($com->img) > 6)
+								{
+									$comment->img = $com->img;
+								}
+								else
+								{
+									$comment->img = "pp/deleted.png";
+								}
+							}
 							if($comment->comOn == $ID[$i] ||$comment->comOn == 0)
 							{
-								echo "<div class=\"comment\"><b>$comment->sender</b><p>$comment->comtext</p>";
+								if(strtolower($comment->sender) == "null" || strtolower($comment->sender) == "admin")
+								{
+									echo "<div class=\"comment\"><img src=\"$comment->img\" style=\"width: 5em; height: 5em; border-radius: 5em;\"><br><b class=\"mod\">$comment->sender</b><p>$comment->comtext</p><span>$comment->dateS</span>";
+								}
+								else
+								{
+									echo "<div class=\"comment\"><img src=\"$comment->img\" style=\"width: 5em; height: 5em; border-radius: 5em;\"><br><b>$comment->sender</b><p>$comment->comtext</p><span>$comment->dateS</span>";
+								}
 								if(isset($_SESSION["user_logged"]))
 								{
 									if($_SESSION["user_logged"] == "admin")
@@ -130,7 +152,7 @@
 						}
 						if(isset($_SESSION["user_logged"]))
 							{
-								echo "</div><form class=\"combox\" method=\"POST\"><textarea name=\"$combox\" placeholder=\"Kommentar\"></textarea><input type=\"submit\" name=\"$submit\" value=\"Kommentera\"></form>";
+								echo "<form class=\"combox\" method=\"POST\"><textarea name=\"$combox\" placeholder=\"Kommentar\"></textarea><input type=\"submit\" name=\"$submit\" value=\"Kommentera\"></form></div>";
 					    	if($_SESSION["user_logged"] == "admin")
 					    	{
 					    		echo "<br><span>ID = $ID[$i]</span></article>";
@@ -145,10 +167,10 @@
 							echo "<p style=\"text-align: center;\">Vänligen logga in för att kommentera.</p></article>";
 						}
 			    	}
-		    	else
-		    	{
+			    	else
+			    	{
+		    		//Preview
 		    		$content[$i] = preg_replace('/<p[^>]*>([\s\S]*?)<\/p[^>]*>/', '', $content[$i]);
-
 		    		$header = preg_replace('/<b[^>]*>([\s\S]*?)<\/b[^>]*>/', '', $content[$i]);
 		    		$inledning = preg_replace('/<h2[^>]*>([\s\S]*?)<\/h2[^>]*>/', '', $content[$i]);
 		    		if(strlen($bild[$i]) > 6)
@@ -170,9 +192,18 @@
 				if(isset($_POST[$strset]))
 				{
 					$idpost = $ID[$i];
-					$comment = htmlspecialchars(addslashes($_POST[$comset]));
+					if($_SESSION["user_logged"] != "admin")
+					{
+						$comment = htmlspecialchars(addslashes($_POST[$comset]));
+					}
+					else
+					{
+						$comment = $_POST[$comset];
+					}
+					$comment = str_replace("\n", "<br>", $comment);
 					$sender = $_SESSION["user_logged"];
-					$sql = "INSERT INTO `comment` (`comtext`, `comon`, `sender`) VALUES (\"$comment\", $idpost, \"$sender\");";
+					@$datesent = strval(date("d/m/Y") . " - " . date("H:i"));
+					$sql = "INSERT INTO `comment` (`comtext`, `comon`, `sender`, `date`) VALUES (\"$comment\", $idpost, \"$sender\", \"$datesent\");";
 					if(mysqli_query($conn, $sql))
 					{
 						echo "<script>location.replace('index.php?", $_SERVER["QUERY_STRING"], "');</script>";
@@ -190,10 +221,8 @@
 			public $sender; 
 			public $comtext; 
 			public $comOn;
-			public function printer()
-			{
-				echo "<p>$ID, $sender, $comtext, $comOn </p><br>";
-			}
+			public $dateS;
+			public $img;
 		}
 		?>
 	</main>

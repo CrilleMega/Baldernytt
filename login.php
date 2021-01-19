@@ -12,7 +12,7 @@
 					@$user = $_POST["user"];
 					if(strlen($user)> 3)
 					{
-						$user = htmlspecialchars(strtolower($_POST["user"]));
+						$user = htmlspecialchars($_POST["user"]);
 					}
 					else
 					{
@@ -57,36 +57,56 @@
 					}
 					else if (isset($_POST["create"]))
 					{
-						$sql = "SELECT * FROM `users` WHERE `username` = \"$user\"";
-						if ($result = mysqli_query($conn, $sql)) 
-		                {
-		                     while($row = mysqli_fetch_row($result))
-		                    {
-		                        @$a[]  = $row[1];
-		                        @$b[] = $row[2];
-		                    }
-		                    if(Count($a) > 0)
-		                    {
-		                    	echo "<br>Användaren \"$user\" finns redan.";
-		                    }
-		                    else
-		                    {
-		                    	$sql = "INSERT INTO `users` (`username`, `password`, `img`) VALUES (\"$user\",  \"$pass\", \"pp/noimg.jpg\");";
-		                    	if(mysqli_query($conn, $sql))
-		                    	{
-		                    		echo "<br>Användaren $user skapad!";
-		                    	}
-		                    	else
-		                    	{
-		                    		echo "Något gick fel wtf<br>";	                    		
-		                    		var_dump($user, $pass);
-		                    	}
-		                    }
-		                }
+						if(strlen($user) > 3 && strlen($user) < 32)
+						{
+							$sql = "SELECT * FROM `users` WHERE `username` = \"$user\"";
+							if ($result = mysqli_query($conn, $sql)) 
+			                {
+			                     while($row = mysqli_fetch_row($result))
+			                    {
+			                        @$a[]  = $row[2];
+			                        @$b[] = $row[3];
+			                    }
+			                    if(Count($a) > 0)
+			                    {
+			                    	if($user == "null")
+			                    	{
+			                    	echo "<br>Layer 8 problem.";
+			                    	}
+			                    	else
+			                    	{
+			                    	echo "<br>Användaren \"$user\" finns redan.";
+			                    	}
+			                    }
+			                    else
+			                    {
+			                    	$sql = "INSERT INTO `users` (`username`, `password`, `img`) VALUES (\"$user\",  \"$pass\", \"pp/noimg.jpg\");";
+			                    	if(mysqli_query($conn, $sql))
+			                    	{
+			                    		echo "<br>Användaren $user skapad!";
+			                    	}
+			                    	else
+			                    	{
+			                    		echo "Något gick fel wtf<br>";	                    		
+			                    		var_dump($user, $pass);
+			                    	}
+			                    }
+			                }
+						}
+						else
+						{
+							echo "<br>Layer 8 problem";
+						}
 
 					}
 					?>
 			</form>
+			<h2>Hur du skapar ett konto:</h2>
+			<ul>
+				<li>Skriv in använder namn och lösenord</li>
+				<li>Tryck Skapa konto</li>
+				<li>Klar!</li>
+			</ul>
 		</article>
 	</main>
 </body>

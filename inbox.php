@@ -1,5 +1,8 @@
 <?php
 	include "header.php";
+	$rec = $_SESSION["user_logged"];
+	$sql = "UPDATE `msgz` SET `isRead`=1 WHERE msgTo=\"$rec\"";
+	mysqli_query($conn, $sql);
 	?>
 	<body>
 		<main>

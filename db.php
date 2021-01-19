@@ -1,17 +1,8 @@
 <?php 
 	//Database
 	$host_db = "localhost";
-	$user_db = "rcgafudb";
-	$pass_db = "CracKDoWn37";
-	$db_name = "rcgafudb_nyheter";
-
+	$user_db = "root";
+	$pass_db = "";
+	$db_name = "news";
 	$conn = mysqli_connect($host_db, $user_db, $pass_db, $db_name);
-	/*if($conn)
-	{
-		echo "Success!";
-	}
-	else
-	{
-		echo "Could not connect to database.";
-	}*/
 ?>

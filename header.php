@@ -66,10 +66,32 @@ if (session_status() == PHP_SESSION_NONE) {
  <header>
  	
  	<?php
- 	if(isset($_SESSION["user_logged"]))
+ 		if(isset($_SESSION["user_logged"]))
+		{
+			$admin = False;
+			$sql = "SELECT * FROM `users` WHERE power=1;";
+			if($result = mysqli_query($conn, $sql))
 			{
-				//echo "<p style=\"float: right;\">Inloggad som:", $_SESSION["user_logged"] ,"</p>";
+			 while($row = mysqli_fetch_row($result))
+				{
+				    if(strtolower($row[0]) == strtolower($_SESSION["user_logged"]))
+				    {
+				    	$admin = True;
+				    }
+				}
 			}
+			$rec = $_SESSION["user_logged"];
+			$sql = "SELECT * FROM `msgz` WHERE msgTo=\"$rec\" AND isRead = 0;";
+			$msgcount = 0;
+			if($result = mysqli_query($conn, $sql))
+			{
+			 while($row = mysqli_fetch_row($result))
+				{
+					$msgcount++;
+				}
+			}
+			//var_dump($admin);
+		}
 		?>
  	<!--<h1 onclick="home()">BalderNytt</h1>-->
  	<div style="display: flex; justify-content: space-around;">
@@ -89,11 +111,18 @@ if(isset($_SESSION["user_logged"]))
 		if(isset($_SESSION["user_logged"]))
 		{
  			echo "<a href=\"user.php\">Konto</a>";
-			if($_SESSION["user_logged"] == "admin")
+			if($admin == True)
 			{
 				echo "<a href=\"write.php\">Skriv inlägg</a>";
 			}
-			echo "<a href=\"inbox.php\">Inbox</a>";
+			if($msgcount > 0)
+			{
+				echo "<a href=\"inbox.php\">Inbox($msgcount)</a>";
+			}
+			else
+			{
+				echo "<a href=\"inbox.php\">Inbox</a>";
+			}
 			echo "<a href=\"logout.php\">Logga ut.</a>";
 		}
 		else

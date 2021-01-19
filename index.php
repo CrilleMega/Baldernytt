@@ -6,7 +6,7 @@
 		<?php
 		if(isset($_SESSION["user_logged"]))
 		{
-			if($_SESSION["user_logged"] == "admin")
+			if($admin == True)
 			{
 				echo"<article>
 				<form method=\"POST\">
@@ -135,7 +135,7 @@
 								}
 								if(isset($_SESSION["user_logged"]))
 								{
-									if($_SESSION["user_logged"] == "admin")
+									if($admin == True)
 									{
 										echo"<span>ID: $comment->ID</span></div>";
 									}
@@ -153,7 +153,7 @@
 						if(isset($_SESSION["user_logged"]))
 							{
 								echo "<form class=\"combox\" method=\"POST\"><textarea name=\"$combox\" placeholder=\"Kommentar\"></textarea><input type=\"submit\" name=\"$submit\" value=\"Kommentera\"></form></div>";
-					    	if($_SESSION["user_logged"] == "admin")
+					    	if($admin == True)
 					    	{
 					    		echo "<br><span>ID = $ID[$i]</span></article>";
 					    	}
@@ -170,12 +170,22 @@
 			    	else
 			    	{
 		    		//Preview
+			    	$comcount = 0;
+			    	foreach ($comList as &$x)
+			    	{
+			    		//var_dump($x->comOn);
+			    		//var_dump($ID[$i]);
+			    		if($x->comOn == $ID[$i])
+			    		{
+			    			$comcount++;
+			    		}
+			    	}
 		    		$content[$i] = preg_replace('/<p[^>]*>([\s\S]*?)<\/p[^>]*>/', '', $content[$i]);
 		    		$header = preg_replace('/<b[^>]*>([\s\S]*?)<\/b[^>]*>/', '', $content[$i]);
 		    		$inledning = preg_replace('/<h2[^>]*>([\s\S]*?)<\/h2[^>]*>/', '', $content[$i]);
 		    		if(strlen($bild[$i]) > 6)
 			    	{
-			    		echo"<article><img src=\"$bild[$i]\" alt=\"bild\"></img><a href=\"?$ID[$i]\">", $header, "</a>", $inledning, "</article>";
+			    		echo"<article><img src=\"$bild[$i]\" alt=\"bild\"></img><a href=\"?$ID[$i]\">", $header, "</a>", $inledning, "<span>Kommentarer: ", $comcount, "</span>", "</article>";
 			    	}
 			    	else
 			    	{
@@ -192,7 +202,7 @@
 				if(isset($_POST[$strset]))
 				{
 					$idpost = $ID[$i];
-					if($_SESSION["user_logged"] != "admin")
+					if($admin != True)
 					{
 						$comment = htmlspecialchars(addslashes($_POST[$comset]));
 					}

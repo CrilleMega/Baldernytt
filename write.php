@@ -1,7 +1,7 @@
 <!doctype html>
 <?php 
 include "header.php"; 
-if($_SESSION["user_logged"] != "admin")
+if($admin == False)
 {
 	header("Location: index.php");
 }
